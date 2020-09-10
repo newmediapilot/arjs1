@@ -1,11 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AngularFireDatabase} from '@angular/fire/database';
-import * as firebase from 'firebase/app';
-import _ from "lodash";
+import {Router} from '@angular/router';
 import {UserService} from '../services/user.service';
-import {catchError, take} from 'rxjs/operators';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -14,32 +10,37 @@ import {catchError, take} from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
 
-  private authProvider: any;
-  private userFetching: boolean = true;
+  private hideForm: boolean = true;
   public error: any;
 
   constructor(
     private uService: UserService,
-    private aRoute: ActivatedRoute,
     private router: Router
   ) {
   }
 
   ngOnInit(): void {
-    this.userFetching = true;
+    this.hideForm = true;
+    this.testLoginStatus();
+  }
 
-    this.uService.verifyLogin().pipe(
-      take(1)
-    ).subscribe((loggedIn) => {
-      if (loggedIn)
-        this.router.navigate(['auth', 'editor']);
-      else
-        this.userFetching = false;
-    })
+  testLoginStatus() {
+    this.uService.isLoggedIn()
+      .pipe(take(1))
+      .subscribe((isLoggedIn) => {
+        if (isLoggedIn)
+          this.router.navigate(['auth', 'editor']);
+        else
+          this.showForm();
+      });
+  }
+
+  showForm(){
+    this.hideForm = false;
   }
 
   login() {
-    this.uService.loginRedirect();
+    this.uService.login();
   }
 
 }
