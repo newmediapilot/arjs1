@@ -29,13 +29,7 @@ export class LoginComponent implements OnInit {
       if (null === user) {
         this.userFetching = false;
       } else {
-        this.db.object('users/' + user.uid).set(user).then(
-          () => {
-            this.router.navigate(['auth', 'editor']);
-          }
-        ).catch(error => {
-          this.error = error;
-        });
+        this.router.navigate(['auth', 'editor']);
       }
     });
   }

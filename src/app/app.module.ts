@@ -11,12 +11,14 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
+import { EditorComponent } from './auth/editor/editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    AuthComponent
+    AuthComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,
