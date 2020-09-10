@@ -2,8 +2,10 @@
   <div class="row">
     <div class="card">
       <div class="card-body">
-        <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
-             aria-hidden="true">
+        <img style="cursor:pointer"
+             (click)="signInWithGoogle()"
+             src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+             alt="Sign In with Google">
       </div>
     </div>
   </div>
