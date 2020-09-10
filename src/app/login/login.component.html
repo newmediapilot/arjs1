@@ -1,12 +1,18 @@
-<div class="container">
+<div *ngIf="!userFetching else showLoading" class="container">
   <div class="row">
     <div class="card">
       <div class="card-body">
         <img style="cursor:pointer"
-             (click)="signInWithGoogle()"
+             (click)="login()"
              src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
              alt="Sign In with Google">
       </div>
     </div>
   </div>
+  <div *ngIf="this.error" class="row">
+    {{ this.error | json }}
+  </div>
 </div>
+<ng-template #showLoading>
+  Loading...
+</ng-template>
