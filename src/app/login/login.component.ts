@@ -3,6 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFireDatabase} from '@angular/fire/database';
 import * as firebase from 'firebase/app';
+import _ from "lodash";
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,14 @@ export class LoginComponent implements OnInit {
       if (null === user) {
         this.userFetching = false;
       } else {
-        this.router.navigate(['auth', 'editor']);
+        this.db.object(`users/${user.uid}`).set(
+          _.pick(user, 'uid', 'email')
+        ).then(() => {
+          this.router.navigate(['auth', 'editor']);
+        }).catch(error => {
+          this.error = error;
+          this.userFetching = false;
+        });
       }
     });
   }
@@ -39,6 +47,7 @@ export class LoginComponent implements OnInit {
     this.auth.signInWithRedirect(this.authProvider)
       .catch(error => {
         this.error = error;
+        this.userFetching = false;
       });
   }
 
