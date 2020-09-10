@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFireDatabase} from '@angular/fire/database';
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +18,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private auth: AngularFireAuth,
     private db: AngularFireDatabase,
+    private aRoute: ActivatedRoute,
     private router: Router
   ) {
   }
