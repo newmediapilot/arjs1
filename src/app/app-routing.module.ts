@@ -9,6 +9,12 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
+    path: 'auth',
+    children: [
+      // editor
+    ]
+  },
+  {
     path: '**',
     redirectTo: 'login'
   }
