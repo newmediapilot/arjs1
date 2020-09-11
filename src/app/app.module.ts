@@ -1,19 +1,17 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {LoginComponent} from './login/login.component';
 import {AuthComponent} from './auth/auth.component';
 import {AngularFireModule} from '@angular/fire';
 import {environment} from '../environments/environment';
-import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireAuthModule} from '@angular/fire/auth';
-import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
-import { EditorComponent } from './auth/editor/editor.component';
-import { LogoutComponent } from './logout/logout.component';
-import { HeaderComponent } from './common/header/header.component';
+import {EditorComponent} from './auth/editor/editor.component';
+import {LoginComponent} from './core/login/login.component';
+import {HeaderComponent} from './core/header/header.component'
+import {UserService} from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +19,6 @@ import { HeaderComponent } from './common/header/header.component';
     LoginComponent,
     AuthComponent,
     EditorComponent,
-    LogoutComponent,
     HeaderComponent
   ],
   imports: [
@@ -31,7 +28,9 @@ import { HeaderComponent } from './common/header/header.component';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
   ],
-  providers: [],
+  providers: [
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
