@@ -1,0 +1,7 @@
+<nav class="navbar navbar-light bg-light justify-content-between">
+  <a class="navbar-brand" href="#">AR Editor</a>
+  <form class="form-inline">
+    <span *ngIf="user" class="navbar-text mr-3">{{ user?.email }}</span>
+    <button class="btn btn-warning" (click)="logout()">Logout</button>
+  </form>
+</nav>
