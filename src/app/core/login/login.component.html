@@ -1,10 +1,10 @@
 <div *ngIf="showForm else showLoading" class="container">
-  <div class="row">
+  <div class="row col">
     <div class="card">
       <div class="card-body">
         <img style="cursor:pointer"
              (click)="login()"
-             src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+             src="/assets/images/btn_google_signin_dark_normal_web.png"
              alt="Sign In with Google">
       </div>
     </div>
@@ -12,7 +12,9 @@
 </div>
 
 <ng-template #showLoading>
-  <div class="container row col">
-    Loading...
+  <div class="container">
+    <div class="row col mt-4 mb-4">
+      Loading...
+    </div>
   </div>
 </ng-template>
