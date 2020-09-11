@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {take} from 'rxjs/operators';
 import {UserService} from '../../services/user.service';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +10,7 @@ import {UserService} from '../../services/user.service';
 })
 export class LoginComponent implements OnInit {
 
-  private showForm: boolean;
+  showForm: boolean;
 
   constructor(
     private userService: UserService,
@@ -19,7 +19,20 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    (this.userService.isLoggedIn()) ? this.router.navigate(['auth', 'editor']) : this.showForm = true;
+    this.initializeSession();
+  }
+
+  initializeSession() {
+    this.userService.initializeSession()
+      .pipe(take(1))
+      .subscribe((inited) => {
+        console.log('inited', inited);
+        if (inited) {
+          this.router.navigate(['auth', 'editor']);
+        } else {
+          this.showForm = true;
+        }
+      });
   }
 
   login() {

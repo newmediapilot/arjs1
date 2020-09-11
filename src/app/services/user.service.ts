@@ -5,70 +5,87 @@ import {auth} from 'firebase/app';
 import * as _ from 'lodash';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  private user;
+
   constructor(private auth: AngularFireAuth,
               private db: AngularFireDatabase) {
   }
 
   login() {
+    localStorage.setItem('signInWithRedirect', '1');
     return fromPromise(
       this.auth.signInWithRedirect(new auth.GoogleAuthProvider())
     );
   }
 
   logout() {
-    this.clearLocalUser();
+    localStorage.setItem('user', null);
+    localStorage.setItem('signInWithRedirect', null);
+    this.user = null;
     return fromPromise(this.auth.signOut());
   }
 
   isLoggedIn() {
-    var localUser = this.getLocalUser();
-    if (localUser) {
-      return of(true);
-    } else {
+    return !!this.getStoredUser();
+  }
+
+  initializeSession() {
+    let signInWithRedirect = JSON.parse(localStorage.getItem('signInWithRedirect'));
+    if (!!signInWithRedirect) {
+      console.log('initializeSession::full');
+      localStorage.setItem('signInWithRedirect', null);
       return this.getAuthResult().pipe
       (
-        map((result) => (result.user) ? this.mapUser(result.user) : null),
-        tap((mapped) => (mapped) ? this.setLocalUser(mapped) : null),
-        switchMap((save) => (save) ? this.setUserDB(save) : of(false))
+        map(this.extractUser),
+        tap((mapped) => this.storeUserLocally(mapped)),
+        switchMap((picked) => (picked) ? this.saveUserDB(picked) : of(false)),
       );
+    } else {
+      console.log('initializeSession::quick');
+      return of(this.isLoggedIn());
     }
+  }
+
+  protected storeUserLocally(user) {
+    this.user = user;
+
+    localStorage.setItem('user', JSON.stringify(user))
+  }
+
+  protected getStoredUser() {
+    if (!this.user) this.user = JSON.parse(localStorage.getItem('user'));
+    console.log('this.user', this.user);
+    return this.user;
+  }
+
+  protected extractUser(result) {
+    let {user} = result;
+    if (user)
+      return {updatedAt: new Date().getTime(), ..._.pick(user, 'email', 'uid')};
+    else
+      return null;
   }
 
   private getAuthResult() {
     return fromPromise(this.auth.getRedirectResult());
   }
 
-  protected mapUser(user: firebase.User) {
-    return _.pick(user, 'uid', 'email');
-  }
-
-  protected clearLocalUser() {
-    localStorage.setItem('user', null);
-  }
-
-  protected setLocalUser(user) {
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  protected getLocalUser() {
-    return JSON.parse(localStorage.getItem('user'));
-  }
-
-  private setUserDB(user) {
+  private saveUserDB(user) {
     return new Observable((observer) => {
       this.db.object(`users/${user.uid}`).set(user).then((result) => {
         observer.next(true);
       }).catch((error) => {
+        // todo: add handling for errors
         observer.error(error);
       })
-    })
+    });
   }
 
 }

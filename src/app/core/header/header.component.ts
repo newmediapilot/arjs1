@@ -16,7 +16,7 @@ export class HeaderComponent {
     private uService: UserService,
     private aRoute: ActivatedRoute,
     private router: Router) {
-      this.user = uService.getLocalUser();
+    //this.user = uService.userObject;
   }
 
   logout() {
