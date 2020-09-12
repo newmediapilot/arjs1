@@ -50,7 +50,8 @@ export class EditorComponent implements OnInit {
               uid: this.uid,
               createdAt: timestamp,
               path: path,
-              url: url
+              url: url,
+              marker: 0
             }
           )
         })
