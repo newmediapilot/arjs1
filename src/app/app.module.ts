@@ -12,6 +12,7 @@ import {EditorComponent} from './auth/editor/editor.component';
 import {LoginComponent} from './core/login/login.component';
 import {HeaderComponent} from './core/header/header.component'
 import {UserService} from './services/user.service';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {UserService} from './services/user.service';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    FormsModule,
   ],
   providers: [
     UserService
