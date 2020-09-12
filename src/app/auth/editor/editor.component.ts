@@ -2,7 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {UserService} from '../../services/user.service';
 import {storage} from 'firebase/app';
 import {Observable} from 'rxjs';
-import {switchMap, take} from 'rxjs/operators';
+import {switchMap, take, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFireDatabase} from '@angular/fire/database';
@@ -13,6 +13,8 @@ import {AngularFireDatabase} from '@angular/fire/database';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnDestroy {
+
+  loading: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -58,10 +60,14 @@ export class EditorComponent implements OnDestroy {
 
   uploadImage(data: HTMLInputElement) {
     let file = data.files[0];
+    this.loading = true;
     return this.saveToFirebase(file).pipe(
       switchMap((data) => this.saveToDb(data)),
       take(1),
-    ).subscribe();
+    ).subscribe(() => {
+      this.loading = false;
+    });
   }
+
 
 }
