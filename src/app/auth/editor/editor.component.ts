@@ -18,6 +18,8 @@ export class EditorComponent implements OnInit {
   list;
   uid = this.userService.uid;
 
+  loading: boolean = false;
+
   constructor(
     private userService: UserService,
     private db: AngularFireDatabase) {
