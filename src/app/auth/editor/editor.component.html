@@ -2,14 +2,40 @@
   <div class="row col">
     <h1>Editor</h1>
   </div>
-  <table width="100%">
+  <table class="table" width="100%">
     <thead>
-      <td width="25%">
-        <img height="100" src="/assets/markers/01.png"/>
-      </td>
-      <td width="25%">
-        <button class="btn btn-primary">Upload Image</button>
-      </td>
+    <td>marker</td>
+    <td>image</td>
     </thead>
+    <tbody>
+
+    <td>
+      <a href="/assets/markers/01.png" target="_blank">
+        <img height="100" src="/assets/markers/01.png"/>
+      </a>
+    </td>
+
+    <td>
+
+      <form #fileForm="ngForm">
+        <div class="form-group">
+          <input ngModel
+                 required
+                 #fileInput
+                 #fileModel="ngModel"
+                 type="file"
+                 id="image"
+                 name="image"
+                 accept="image/png">
+        </div>
+        <button [disabled]="fileModel.control.invalid"
+                (click)="uploadImage(fileInput)"
+                type="button" class="btn btn-primary">Upload Image
+        </button>
+      </form>
+
+    </td>
+
+    </tbody>
   </table>
 </div>
