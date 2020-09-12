@@ -5,7 +5,7 @@ import {auth} from 'firebase/app';
 import * as _ from 'lodash';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {Observable, of} from 'rxjs';
-import {map, switchMap, take, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,10 @@ export class UserService {
 
   isLoggedIn() {
     return !!this.getStoredUser();
+  }
+
+  get uid() {
+    return this.user.uid;
   }
 
   initializeSession() {
