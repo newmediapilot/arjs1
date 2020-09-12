@@ -1,9 +1,11 @@
 import {Component, OnDestroy} from '@angular/core';
-import {Observable, Subscribable, Subscription} from 'rxjs';
-import {take} from 'rxjs/operators';
 import {UserService} from '../../services/user.service';
-import firebase from 'firebase/app';
 import {storage} from 'firebase/app';
+import {Observable} from 'rxjs';
+import {switchMap, take} from 'rxjs/operators';
+import {fromPromise} from 'rxjs/internal-compatibility';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {AngularFireDatabase} from '@angular/fire/database';
 
 @Component({
   selector: 'app-editor',
@@ -12,62 +14,54 @@ import {storage} from 'firebase/app';
 })
 export class EditorComponent implements OnDestroy {
 
-  uploadSubscription: Subscription;
-
   constructor(
-    private userService: UserService
-  ) {
+    private userService: UserService,
+    private db: AngularFireDatabase) {
   }
 
   ngOnDestroy(): void {
-    this.uploadSubscription.unsubscribe();
+    //
   }
 
-  convertBlob(fileObject): Observable<any> {
-    console.log('convertBlob', fileObject);
-    return new Observable(
-      (observer) => {
-        let fr = new FileReader();
-        fr.readAsDataURL(fileObject);
-        fr.onload = (e) => {
-          console.log('fr.onload');
-          observer.next(e.target['result']);
-        };
-        fr.onerror = (e) => {
-          console.log('fr.onerror');
-          observer.error(e);
-        }
-      }
-    );
+  saveToDb(data) {
+    return fromPromise(this.db.list(`images/${data.uid}`).push(data));
   }
 
-  pushToFirebase(blob: Blob) {
-    let store = storage();
-    let ref = store.ref();
-    let file = blob;
-    let metadata = {contentType: 'image/png'};
-    let uid = this.userService.uid;
-    let date = new Date().getTime();
-    let uploadTask = ref.child(`slides/${uid}/${date}`).put(file, metadata);
+  saveToFirebase(file: File) {
+    return new Observable((observer) => {
 
-    uploadTask.on('state_changed', function (snapshot) {
-      console.log('progress...');
-    }, (error) => {
-      // error
-    }, () => {
-      uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-        console.log('File available at', downloadURL);
-      });
+      let ref = storage().ref();
+      let uid = this.userService.uid;
+      let timestamp = new Date().getTime();
+      let metadata = {contentType: 'image/png'};
+      let path = `slides/${uid}/${timestamp}`;
+
+      let uploadTask = ref.child(path).put(file, metadata);
+
+      uploadTask.on('state_changed',
+        (progress) => null,
+        (error) => observer.error,
+        () => uploadTask.snapshot.ref.getDownloadURL().then((url) => {
+          observer.next(
+            {
+              uid: uid,
+              createdAt: timestamp,
+              path: path,
+              url: url
+            }
+          )
+        })
+      );
+
     });
-
   }
 
   uploadImage(data: HTMLInputElement) {
-    this.uploadSubscription = this.convertBlob(data.files[0]).pipe(
-      take(1)
-    ).subscribe((blob) => {
-      this.pushToFirebase(blob);
-    });
+    let file = data.files[0];
+    return this.saveToFirebase(file).pipe(
+      switchMap((data) => this.saveToDb(data)),
+      take(1),
+    ).subscribe();
   }
 
 }

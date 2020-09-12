@@ -13,6 +13,7 @@ import {LoginComponent} from './core/login/login.component';
 import {HeaderComponent} from './core/header/header.component'
 import {UserService} from './services/user.service';
 import {FormsModule} from '@angular/forms';
+import {AngularFireStorageModule} from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {FormsModule} from '@angular/forms';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     FormsModule,
   ],
   providers: [
