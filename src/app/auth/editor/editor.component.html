@@ -2,40 +2,28 @@
   <div class="row col">
     <h1>Editor</h1>
   </div>
-  <table class="table" width="100%">
-    <thead>
-    <td>marker</td>
-    <td>image</td>
-    </thead>
-    <tbody>
-
-    <td>
-      <a href="/assets/markers/01.png" target="_blank">
-        <img height="100" src="/assets/markers/01.png"/>
-      </a>
-    </td>
-
-    <td>
-
-      <form #fileForm="ngForm">
-        <div class="form-group">
-          <input ngModel
-                 required
-                 #fileInput
-                 #fileModel="ngModel"
-                 type="file"
-                 id="image"
-                 name="image"
-                 accept="image/png">
-        </div>
-        <button [disabled]="fileModel.control.invalid"
-                (click)="uploadImage(fileInput)"
-                type="button" class="btn btn-primary">Upload Image
-        </button>
-      </form>
-
-    </td>
-
-    </tbody>
-  </table>
+  <div *ngIf="!loading else progress" class="row">
+    <form #fileForm="ngForm">
+      <div class="form-group">
+        <input ngModel
+               required
+               #fileInput
+               #fileModel="ngModel"
+               type="file"
+               id="image"
+               name="image"
+               accept="image/png">
+      </div>
+      <button [disabled]="fileModel.control.invalid"
+              (click)="uploadImage(fileInput)"
+              type="button" class="btn btn-primary">Upload Image
+      </button>
+    </form>
+  </div>
 </div>
+
+<ng-template #progress>
+  <div class="row">
+    <h2>Uploading...</h2>
+  </div>
+</ng-template>
