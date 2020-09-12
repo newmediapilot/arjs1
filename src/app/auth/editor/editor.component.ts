@@ -1,10 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../services/user.service';
 import {storage} from 'firebase/app';
 import {Observable} from 'rxjs';
-import {switchMap, take, tap} from 'rxjs/operators';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
-import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFireDatabase} from '@angular/fire/database';
 
 @Component({
@@ -18,19 +17,35 @@ export class EditorComponent implements OnInit {
   list;
   uid = this.userService.uid;
 
-  loading: boolean = false;
-
   constructor(
     private userService: UserService,
     private db: AngularFireDatabase) {
   }
 
   ngOnInit(): void {
-    this.list = this.db.list(`images/${this.uid}`).valueChanges();
+    this.fetchList();
+  }
+
+  fetchList() {
+    this.list = this.db.list(`images/${this.uid}`)
+      .snapshotChanges()
+      .pipe(
+        map((list) => {
+          return list.map(item => ({key: item.key, ...item.payload.val()}))
+        })
+      );
   }
 
   saveToDb(data) {
     return fromPromise(this.db.list(`images/${this.uid}`).push(data));
+  }
+
+  deleteSlide(item) {
+    if (!confirm('delete?')) return;
+
+    this.db.object(`images/${this.uid}/${item.key}`).remove();
+
+    storage().ref().child(`slides/${this.uid}/${item.createdAt}`).delete();
   }
 
   saveToFirebase(file: File) {
