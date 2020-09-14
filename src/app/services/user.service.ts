@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {FireDbService} from './core/fire-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class UserService {
   private user;
 
   constructor(private auth: AngularFireAuth,
-              private db: AngularFireDatabase) {
+              private fireDbService: FireDbService) {
   }
 
   login() {
@@ -82,14 +83,7 @@ export class UserService {
   }
 
   private saveUserDB(user) {
-    return new Observable((observer) => {
-      this.db.object(`users/${user.uid}`).set(user).then((result) => {
-        observer.next(true);
-      }).catch((error) => {
-        // todo: add handling for errors
-        observer.error(error);
-      })
-    });
+    return this.fireDbService.set(`users/${user.uid}`, user);
   }
 
 }

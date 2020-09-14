@@ -16,19 +16,19 @@
                accept="image/png">
       </div>
       <button [disabled]="fileModel.control.invalid"
-              (click)="uploadImage(fileInput)"
+              (click)="upload(fileInput)"
               type="button" class="btn btn-primary">Upload Image
       </button>
     </form>
   </div>
   <table class="table">
     <tr *ngFor="let item of list | async">
-      <td><img width="100%" [src]="item.url"/></td>
+      <td><img width="100" [src]="item.url"/></td>
       <td>{{ item.createdAt | date:'short' }}</td>
       <td>
 
       </td>
-      <td><button class="btn btn-warning" (click)="deleteSlide(item)">DELETE</button></td>
+      <td><button class="btn btn-warning" (click)="delete(item)">DELETE</button></td>
     </tr>
   </table>
 </div>

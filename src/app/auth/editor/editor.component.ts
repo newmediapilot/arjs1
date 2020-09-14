@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {map, switchMap, take, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {AngularFireDatabase} from '@angular/fire/database';
+import {ImageService} from '../../services/image.service';
 
 @Component({
   selector: 'app-editor',
@@ -14,78 +15,27 @@ import {AngularFireDatabase} from '@angular/fire/database';
 export class EditorComponent implements OnInit {
 
   loading: boolean = false;
-  list;
-  uid = this.userService.uid;
+  list = this.imageService.list();
 
   constructor(
     private userService: UserService,
-    private db: AngularFireDatabase) {
+    private imageService: ImageService) {
   }
 
   ngOnInit(): void {
-    this.fetchList();
+
   }
 
-  fetchList() {
-    this.list = this.db.list(`images/${this.uid}`)
-      .snapshotChanges()
-      .pipe(
-        map((list) => {
-          return list.map(item => ({key: item.key, ...item.payload.val()}))
-        })
-      );
-  }
-
-  saveToDb(data) {
-    return fromPromise(this.db.list(`images/${this.uid}`).push(data));
-  }
-
-  deleteSlide(item) {
+  delete(item) {
     if (!confirm('delete?')) return;
-
-    this.db.object(`images/${this.uid}/${item.key}`).remove();
-
-    storage().ref().child(`slides/${this.uid}/${item.createdAt}`).delete();
+    this.imageService.delete(item);
   }
 
-  saveToFirebase(file: File) {
-    return new Observable((observer) => {
-
-      let ref = storage().ref();
-      let timestamp = new Date().getTime();
-      let metadata = {contentType: 'image/png'};
-      let path = `slides/${this.uid}/${timestamp}`;
-
-      let uploadTask = ref.child(path).put(file, metadata);
-
-      uploadTask.on('state_changed',
-        (progress) => null,
-        (error) => observer.error,
-        () => uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-          observer.next(
-            {
-              uid: this.uid,
-              createdAt: timestamp,
-              path: path,
-              url: url,
-              marker: 0
-            }
-          )
-        })
-      );
-
-    });
-  }
-
-  uploadImage(data: HTMLInputElement) {
-    let file = data.files[0];
+  upload(file: HTMLInputElement) {
     this.loading = true;
-    return this.saveToFirebase(file).pipe(
-      switchMap((data) => this.saveToDb(data)),
-      take(1),
-    ).subscribe(() => {
+    this.imageService.upload(file.files[0]).subscribe(() => {
       this.loading = false;
-    });
+    })
   }
 
 

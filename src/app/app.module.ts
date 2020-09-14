@@ -1,6 +1,4 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {APP_INITIALIZER, NgModule} from '@angular/core';
-
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthComponent} from './auth/auth.component';
@@ -14,6 +12,10 @@ import {HeaderComponent} from './core/header/header.component'
 import {UserService} from './services/user.service';
 import {FormsModule} from '@angular/forms';
 import {AngularFireStorageModule} from '@angular/fire/storage';
+import {FireDbService} from './services/core/fire-db.service';
+import {FireStorageService} from './services/core/fire-storage.service';
+import {ImageService} from './services/image.service';
+import {NgModule} from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,10 @@ import {AngularFireStorageModule} from '@angular/fire/storage';
     FormsModule,
   ],
   providers: [
-    UserService
+    UserService,
+    ImageService,
+    FireDbService,
+    FireStorageService,
   ],
   bootstrap: [AppComponent]
 })
