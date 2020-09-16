@@ -17,6 +17,7 @@ import {FireStorageService} from './services/core/fire-storage.service';
 import {ImageService} from './services/image.service';
 import {ErrorHandler, NgModule} from '@angular/core';
 import {AppErrorHandler} from './core/overwrite/app-error-handler';
+import { EditorImageComponent } from './editor-image/editor-image.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {AppErrorHandler} from './core/overwrite/app-error-handler';
     LoginComponent,
     AuthComponent,
     EditorComponent,
-    HeaderComponent
+    HeaderComponent,
+    EditorImageComponent
   ],
   imports: [
     BrowserModule,

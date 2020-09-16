@@ -4,6 +4,7 @@ import {EditorComponent} from './editor/editor.component';
 import {AuthComponent} from './auth/auth.component';
 import {AuthGuard} from './guards/auth.guard';
 import {LoginComponent} from './core/login/login.component';
+import {EditorImageComponent} from './editor-image/editor-image.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,10 @@ const routes: Routes = [
       {
         path: 'editor',
         component: EditorComponent
+      },
+      {
+        path: 'editor-image',
+        component: EditorImageComponent
       }
     ]
   },
