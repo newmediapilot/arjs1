@@ -16,7 +16,7 @@ import {FireDbService} from './services/core/fire-db.service';
 import {FireStorageService} from './services/core/fire-storage.service';
 import {ImageService} from './services/image.service';
 import {ErrorHandler, NgModule} from '@angular/core';
-import {AppErrorHandler} from './core/provider/app-error-handler';
+import {AppErrorHandler} from './core/overwrite/app-error-handler';
 
 @NgModule({
   declarations: [

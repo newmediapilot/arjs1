@@ -26,7 +26,7 @@
       <td><img width="100" [src]="item.url"/></td>
       <td>{{ item.createdAt | date:'short' }}</td>
       <td>
-
+      {{ item | json }}
       </td>
       <td><button class="btn btn-warning" (click)="delete(item)">DELETE</button></td>
     </tr>

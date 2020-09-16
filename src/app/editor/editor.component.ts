@@ -7,7 +7,7 @@ import {ImageService} from '../services/image.service';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent {
 
   loading: boolean = false;
   list = this.imageService.list();
@@ -17,13 +17,9 @@ export class EditorComponent implements OnInit {
     private imageService: ImageService) {
   }
 
-  ngOnInit(): void {
-
-  }
-
   delete(item) {
     if (!confirm('delete?')) return;
-    this.imageService.delete(item);
+    this.imageService.delete(item).subscribe();
   }
 
   upload(file: HTMLInputElement) {
@@ -32,6 +28,5 @@ export class EditorComponent implements OnInit {
       this.loading = false;
     })
   }
-
 
 }

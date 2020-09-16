@@ -44,7 +44,7 @@ export class UserService {
   initializeSession() {
     let signInWithRedirect = JSON.parse(localStorage.getItem('signInWithRedirect'));
     if (!!signInWithRedirect) {
-      console.log('initializeSession::full');
+      console.log('initializeSession::new');
       localStorage.setItem('signInWithRedirect', null);
       return this.getAuthResult().pipe
       (
@@ -53,7 +53,7 @@ export class UserService {
         switchMap((picked) => (picked) ? this.saveUserDB(picked) : of(false)),
       );
     } else {
-      console.log('initializeSession::quick');
+      console.log('initializeSession::refresh');
       return of(this.isLoggedIn());
     }
   }
@@ -66,12 +66,13 @@ export class UserService {
 
   protected getStoredUser() {
     if (!this.user) this.user = JSON.parse(localStorage.getItem('user'));
-    console.log('this.user', this.user);
+
     return this.user;
   }
 
   protected extractUser(result) {
     let {user} = result;
+
     if (user)
       return {updatedAt: new Date().getTime(), ..._.pick(user, 'email', 'uid')};
     else

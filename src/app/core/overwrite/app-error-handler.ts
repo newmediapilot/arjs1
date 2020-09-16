@@ -8,7 +8,7 @@ export class AppErrorHandler extends ErrorHandler {
 
   handleError(error: any): void {
     console.log('AppErrorHandler', error);
-    super.handleError(error);
+    // super.handleError(error);
   }
 
 }

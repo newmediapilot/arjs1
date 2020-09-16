@@ -4,6 +4,8 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import {UserService} from '../user.service';
 import {catchError} from 'rxjs/operators';
+import {FirebaseError} from 'firebase';
+import {of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +34,8 @@ export class FireStorageService {
       firebase.storage().ref().child(path).delete()
     ).pipe(
       catchError((e) => {
-        throw new Error(e)
+        // todo: don't throw on 404 when deleting, only warn
+        throw new Error(e);
       })
     );
   }

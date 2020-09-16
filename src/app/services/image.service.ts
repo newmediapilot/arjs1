@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {UserService} from './user.service';
 import {FireStorageService} from './core/fire-storage.service';
-import {mergeMap, take} from 'rxjs/operators';
+import {map, switchMap, take} from 'rxjs/operators';
 import {FireDbService} from './core/fire-db.service';
+import {DatabaseImage} from '../interfaces/database-image';
+import {fromPromise} from 'rxjs/internal-compatibility';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +24,34 @@ export class ImageService {
     return this.fireDatabase.list(`images/${this.uid}`);
   }
 
+  pushDB(result) {
+    console.log('ImageService.save', result);
+
+    return fromPromise(result.ref.getDownloadURL())
+      .pipe(map((downloadURL: string) => {
+          let data: DatabaseImage = {
+            path: result.metadata.fullPath,
+            createdAt: new Date().getTime(),
+            url: downloadURL
+          };
+          return data;
+        }),
+        switchMap((data) => this.fireDatabase.push(`images/${this.uid}`, data))
+      );
+  }
+
   upload(payload) {
+    console.log('ImageService.upload', payload);
+
     return this.fireStorage
       .save(payload)
-      .pipe(take(1));
+      .pipe(
+        switchMap((result) => this.pushDB(result))
+      );
   }
 
   delete(item) {
-    console.log('delete', item);
+    console.log('ImageService.delete', item);
 
     let imagePath = item.path;
     let databasePath = `images/${this.uid}/${item.key}`;
@@ -37,11 +59,8 @@ export class ImageService {
     return this.fireStorage
       .delete(imagePath)
       .pipe(
-        take(1),
-        mergeMap(() =>
-          this.fireDatabase.remove(databasePath)
-        )
-      );
+        switchMap(() => this.fireDatabase.remove(databasePath))
+      )
   }
 
 }
