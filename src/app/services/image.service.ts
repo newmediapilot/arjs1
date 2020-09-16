@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UserService} from './user.service';
 import {FireStorageService} from './core/fire-storage.service';
-import {map, switchMap, take} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {FireDbService} from './core/fire-db.service';
 import {DatabaseImage} from '../interfaces/database-image';
 import {fromPromise} from 'rxjs/internal-compatibility';
@@ -25,8 +25,6 @@ export class ImageService {
   }
 
   pushDB(result) {
-    console.log('ImageService.save', result);
-
     return fromPromise(result.ref.getDownloadURL())
       .pipe(map((downloadURL: string) => {
           let data: DatabaseImage = {
@@ -41,8 +39,6 @@ export class ImageService {
   }
 
   upload(payload) {
-    console.log('ImageService.upload', payload);
-
     return this.fireStorage
       .save(payload)
       .pipe(
@@ -51,8 +47,6 @@ export class ImageService {
   }
 
   delete(item) {
-    console.log('ImageService.delete', item);
-
     let imagePath = item.path;
     let databasePath = `images/${this.uid}/${item.key}`;
 

@@ -12,7 +12,6 @@ export class FireDbService {
   }
 
   list(path) {
-    console.log('FireDbService.list', path);
     return this.db.list(path)
       .snapshotChanges()
       .pipe(
@@ -26,7 +25,6 @@ export class FireDbService {
   }
 
   set(path, data) {
-    console.log('FireDbService.set', path, data);
     return fromPromise(this.db.object(path).set(data)).pipe(
       catchError((e) => {
         throw new Error(e)
@@ -35,7 +33,6 @@ export class FireDbService {
   }
 
   push(path, data) {
-    console.log('FireDbService.push', path, data);
     return fromPromise(this.db.list(path).push(data)).pipe(
       catchError((e) => {
         throw new Error(e)
@@ -44,7 +41,6 @@ export class FireDbService {
   }
 
   remove(path) {
-    console.log('FireDbService.remove', path);
     return fromPromise(this.db.object(path).remove()).pipe(
       catchError((e) => {
         throw new Error(e)

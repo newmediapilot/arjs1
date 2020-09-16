@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {AngularFireDatabase} from '@angular/fire/database';
 import {auth} from 'firebase/app';
 import * as _ from 'lodash';
 import {fromPromise} from 'rxjs/internal-compatibility';
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {FireDbService} from './core/fire-db.service';
 

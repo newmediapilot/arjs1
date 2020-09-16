@@ -4,8 +4,6 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import {UserService} from '../user.service';
 import {catchError} from 'rxjs/operators';
-import {FirebaseError} from 'firebase';
-import {of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +16,6 @@ export class FireStorageService {
   }
 
   save(file: File) {
-    console.log('FireStorageService.save', file);
     return fromPromise(
       firebase.storage().ref().child(this.uploadTo).put(file, {contentType: 'image/png'})
     ).pipe(
@@ -29,7 +26,6 @@ export class FireStorageService {
   }
 
   delete(path) {
-    console.log('FireStorageService.delete', path);
     return fromPromise(
       firebase.storage().ref().child(path).delete()
     ).pipe(
