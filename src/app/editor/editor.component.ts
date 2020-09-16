@@ -1,11 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../services/user.service';
-import {storage} from 'firebase/app';
-import {Observable} from 'rxjs';
-import {map, switchMap, take, tap} from 'rxjs/operators';
-import {fromPromise} from 'rxjs/internal-compatibility';
-import {AngularFireDatabase} from '@angular/fire/database';
-import {ImageService} from '../../services/image.service';
+import {UserService} from '../services/user.service';
+import {ImageService} from '../services/image.service';
 
 @Component({
   selector: 'app-editor',
